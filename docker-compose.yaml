@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    networks:
+      - izarch-blog-api
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - pgadmin-volume:/var/lib/postgresql/data
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - izarch-blog-api
+networks:
+  izarch-blog-api:
+    driver: bridge
+volumes:
+  db-volume:
+  pgadmin-volume:
